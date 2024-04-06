@@ -1,13 +1,12 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import FormProduct from '../../components/form-product';
 import PageLayout from '../../components/page-layout';
-import ProductCard from '../../components/productCard';
-import CatalogFilter from '../../containers/catalog-filter';
-import ProductsList from '../../containers/products-list';
-import { type RootState, useAppDispatch } from '../../redux';
-import { fetchCategories } from '../../redux/categorySlice/asyncActions';
-import { fetchProducts, fetchProductsById } from '../../redux/productsSlice/asyncActions';
+import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
+import { type RootState, store, useAppDispatch } from '../../redux';
+import { postProduct } from '../../redux/productsSlice/asyncActions';
+import { addProduct } from '../../redux/productsSlice/slice';
 import { logout } from '../../redux/userSlice/slice';
 
 
@@ -16,13 +15,18 @@ const CreateProduct: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const select = useSelector((state: RootState) => ({
 		user: state.user,
-		product: state.products.item
 	}));
 	const callbacks = {
 		onLogout: useCallback(() => {
 			dispatch(logout());
 			navigate('/');
-		}, [navigate])
+		}, [navigate]),
+		sendForm: useCallback((data: FormProductArgs) => {
+			const date = new Date().toJSON().slice(0,10).replace(/-/g,'.');
+			dispatch(addProduct({...data, date}));
+			dispatch(postProduct({...data, date}));
+		}, [store]),
+		onReset: useCallback(() => navigate('/products'), [navigate])
 	};
 	
 	useEffect(() => {
@@ -31,17 +35,13 @@ const CreateProduct: React.FC = () => {
 		}
 	}, [select.user]);
 	
-	if (!select.product) {
-		return <></>;
-	}
-	
 	return (
 		<PageLayout
 			user={select.user}
-			title={select.product?.title}
+			title={'Create Product'}
 			logout={callbacks.onLogout}
 		>
-			<ProductCard {...select.product} />
+			<FormProduct sendForm={callbacks.sendForm} onReset={callbacks.onReset}/>
 		</PageLayout>
 	);
 }

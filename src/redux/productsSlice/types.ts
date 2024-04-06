@@ -1,9 +1,11 @@
+import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
 import type { Status } from '../../models/Status';
 
 export interface ProductSliceState {
 	items: IProduct[];
 	item?: IProduct;
+	myItems: FormProductArgs[];
 	status: Status;
 }
 
@@ -20,5 +22,13 @@ export interface fetchProductsByIdArgs {
 
 export interface fetchProductsArgs {
 	limit: number;
+}
+
+export interface postProductArgs {
+	date: string;
+	title: string;
+	price: number;
+	description: string;
+	isPublished: boolean;
 }
 

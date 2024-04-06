@@ -1,5 +1,5 @@
 import { Button, Flex, Select, Space } from 'antd';
-import {memo, useCallback, useMemo} from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import { useSelector } from 'react-redux';
 import SearchInput from '../../components/search-input';
 import type { SortType } from '../../models/SortType';
@@ -7,7 +7,7 @@ import { type RootState, store, useAppDispatch } from '../../redux';
 import { changeCategory, changeLimit, changeSort, onReset, setSearchValue } from '../../redux/filterSlice/slice';
 import { limitItems, sortItems } from '../../utils/consts';
 
-function CatalogFilter() {
+const CatalogFilter: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const select = useSelector((state: RootState) => ({
 		filter: state.filter,

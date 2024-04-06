@@ -1,6 +1,7 @@
 import $api from '../../http';
+import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
-import type { fetchProductsArgs, FetchProductsArgs } from '../../redux/productsSlice/types';
+import type { fetchProductsArgs, FetchProductsArgs, postProductArgs } from '../../redux/productsSlice/types';
 import { AxiosResponse } from "axios";
 
 export default class ProductsService {
@@ -16,6 +17,14 @@ export default class ProductsService {
 	AxiosResponse<IProduct>
 > {
 	return $api.get(`/products/${id}`);
+	}
+	
+	static async postProduct(data: postProductArgs): Promise<
+		AxiosResponse<IProduct>
+	> {
+		return $api.post(`/products`, {
+			...data
+		});
 	}
 
 }

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import PageLayout from '../../components/page-layout';
 import CatalogFilter from '../../containers/catalog-filter';
 import ProductsList from '../../containers/products-list';
+import TabsContainer from '../../containers/tabs-container';
 import { type RootState, useAppDispatch } from '../../redux';
 import { fetchCategories } from '../../redux/categorySlice/asyncActions';
 import { fetchProducts } from '../../redux/productsSlice/asyncActions';
@@ -44,7 +45,7 @@ function Main() {
 			title={'Продукты'}
 			logout={callbacks.onLogout}
 		>
-			<CatalogFilter />
+			<TabsContainer />
 			<ProductsList />
 		</PageLayout>
 	);

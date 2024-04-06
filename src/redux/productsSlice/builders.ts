@@ -1,3 +1,4 @@
+import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
 import { type ProductSliceState} from './types';
 import { WritableDraft } from "immer/src/types/types-external";
@@ -37,5 +38,20 @@ export const fetchProductsByIdBuilder = (
 	builder.addCase(fetch.rejected, (state) => {
 		state.status = Status.ERROR;
 		state.item = undefined;
+	});
+};
+
+export const postProductBuilder = (
+	builder: ActionReducerMapBuilder<WritableDraft<ProductSliceState>>,
+	fetch: AsyncThunk<any, any, any>,
+) => {
+	builder.addCase(fetch.fulfilled, (state) => {
+		state.status = Status.SUCCESS;
+	});
+	builder.addCase(fetch.pending, (state) => {
+		state.status = Status.LOADING;
+	});
+	builder.addCase(fetch.rejected, (state) => {
+		state.status = Status.ERROR;
 	});
 };
