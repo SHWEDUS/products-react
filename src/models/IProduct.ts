@@ -1,9 +1,11 @@
+import type { IRating } from './IRating';
+
 export interface IProduct {
 	id: number,
-	imageUrl: string;
-	descriptionL: string;
+	image: string;
+	description: string;
 	title: string;
 	price: number;
-	category: number;
-	rating: number;
+	category: string;
+	rating: IRating;
 }

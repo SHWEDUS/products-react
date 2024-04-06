@@ -3,6 +3,7 @@ import type { Status } from '../../models/Status';
 
 export interface ProductSliceState {
 	items: IProduct[];
+	item?: IProduct;
 	status: Status;
 }
 
@@ -11,5 +12,13 @@ export type FetchProductsArgs = {
 	category: string;
 	sorting: string;
 	currentPage: number
+}
+
+export interface fetchProductsByIdArgs {
+	id: string | number;
+}
+
+export interface fetchProductsArgs {
+	limit: number;
 }
 

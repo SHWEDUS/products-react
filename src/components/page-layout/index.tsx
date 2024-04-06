@@ -20,8 +20,8 @@ interface PageLayoutProps {
 const layoutStyle: React.CSSProperties = {
 	borderRadius: 8,
 	overflow: 'hidden',
-	width: 'calc(50% - 8px)',
-	maxWidth: 'calc(50% - 8px)',
+	width: 'calc(70% - 8px)',
+	maxWidth: 'calc(70% - 8px)',
 	margin: '0 auto',
 	boxShadow: '10px 5px 5px gray',
 	height: '98vh',

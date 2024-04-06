@@ -1,20 +1,22 @@
-import { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '../../components/page-layout';
+import ProductCard from '../../components/productCard';
 import CatalogFilter from '../../containers/catalog-filter';
 import ProductsList from '../../containers/products-list';
 import { type RootState, useAppDispatch } from '../../redux';
 import { fetchCategories } from '../../redux/categorySlice/asyncActions';
-import { fetchProducts } from '../../redux/productsSlice/asyncActions';
+import { fetchProducts, fetchProductsById } from '../../redux/productsSlice/asyncActions';
 import { logout } from '../../redux/userSlice/slice';
 
-function Main() {
+
+const CreateProduct: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const select = useSelector((state: RootState) => ({
 		user: state.user,
-		limit: state.filter.limit
+		product: state.products.item
 	}));
 	const callbacks = {
 		onLogout: useCallback(() => {
@@ -29,25 +31,19 @@ function Main() {
 		}
 	}, [select.user]);
 	
-	useEffect(() => {
-		dispatch(fetchCategories())
-	}, []);
-	
-	useEffect(() => {
-		dispatch(fetchProducts({limit: select.limit}))
-		
-	}, [select.limit]);
+	if (!select.product) {
+		return <></>;
+	}
 	
 	return (
 		<PageLayout
 			user={select.user}
-			title={'Продукты'}
+			title={select.product?.title}
 			logout={callbacks.onLogout}
 		>
-			<CatalogFilter />
-			<ProductsList />
+			<ProductCard {...select.product} />
 		</PageLayout>
 	);
 }
 
-export default memo(Main);
+export default memo(CreateProduct);

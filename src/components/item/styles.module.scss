@@ -1,0 +1,29 @@
+.Item {
+	:global {
+		.ant-card-body {
+			width: 350px;
+			height: 500px;
+		}
+	}
+	
+	.container {
+		height: 100%;
+		
+		.header {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.title {
+				text-align: center;
+			}
+		}
+		.footer {
+			width: 100%;
+			
+			.price {
+				font-size: 18px;
+				margin: 0 !important;
+			}
+		}
+	}
+}

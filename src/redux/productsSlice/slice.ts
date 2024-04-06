@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Status } from '../../models/Status';
-import { fetchProducts } from './asyncActions';
-import { fetchProductsBuilder } from './builders';
+import { fetchProducts, fetchProductsById } from './asyncActions';
+import { fetchProductsBuilder, fetchProductsByIdBuilder } from './builders';
 import type { ProductSliceState } from './types';
 
 const initialState: ProductSliceState = {
@@ -19,6 +19,7 @@ export const productSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		fetchProductsBuilder(builder, fetchProducts)
+		fetchProductsByIdBuilder(builder, fetchProductsById)
 	}
 });
 
