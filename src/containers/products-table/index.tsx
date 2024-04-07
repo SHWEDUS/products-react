@@ -1,6 +1,6 @@
 import { Badge, Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { IProduct } from '../../models/IProduct';
@@ -16,7 +16,7 @@ function ProductsTable() {
 	const dispatch = useAppDispatch();
 	const products = useSelector(selectMyProducts);
 	const isPublished = useSelector(selectIsPublished);
-
+	const [table, setTable] = useState(<></>);
 	const callbacks = {
 		redirectTo: useCallback(
 			(id: string | number) => navigate(`/products/edit/${id}`),
@@ -101,19 +101,23 @@ function ProductsTable() {
 		}, [products, isPublished])
 	};
 
-	return (
-		<Table
-			onRow={(element: IProduct) => ({
-				onClick: () => {
-					callbacks.redirectTo(element.id);
-				}
-			})}
-			rowKey={'id'}
-			dataSource={data.tableData()}
-			columns={columns}
-			pagination={{ pageSize: 5 }}
-		/>
-	);
+	useEffect(() => {
+		setTable(
+			<Table
+				onRow={(element: IProduct) => ({
+					onClick: () => {
+						callbacks.redirectTo(element.id);
+					}
+				})}
+				rowKey={'id'}
+				dataSource={data.tableData()}
+				columns={columns}
+				pagination={{ pageSize: 5 }}
+			/>
+		);
+	}, [products]);
+
+	return table;
 }
 
 export default memo(ProductsTable);
