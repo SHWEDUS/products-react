@@ -1,4 +1,4 @@
 export type SortType = {
 	label: string;
-	value: 'rating' | 'price' | 'title'
-}
+	value: 'asc' | 'desc';
+};

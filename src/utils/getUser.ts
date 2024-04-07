@@ -5,11 +5,10 @@ export const getUser = (): UserSliceState => {
 		return (
 			JSON.parse(sessionStorage.getItem('user') as string) || {
 				name: 'Аноним',
-				email: '',
 				isAuth: false
 			}
 		);
 	} catch (e) {
-		return { name: 'Аноним', email: '', isAuth: false };
+		return { name: 'Аноним', isAuth: false };
 	}
 };

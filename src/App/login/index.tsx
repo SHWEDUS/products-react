@@ -10,22 +10,25 @@ const Login = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const select = useSelector((state: RootState) => ({
-		user: state.user,
+		user: state.user
 	}));
-	
+
 	useEffect(() => {
 		if (select.user.isAuth) {
 			navigate(-1);
 		}
 	}, [select.user]);
-	
+
 	const callbacks = {
-		loginUser: useCallback(({ name, email }: Record<string, string>) => dispatch(setUser({ name, email })), [store])
+		loginUser: useCallback(
+			({ name }: Record<string, string>) => dispatch(setUser({ name })),
+			[store]
+		)
 	};
-	
+
 	return (
 		<PageLayout user={select.user} title={'React Chat'}>
-			<AuthForm login={callbacks.loginUser}/>
+			<AuthForm login={callbacks.loginUser} />
 		</PageLayout>
 	);
 };

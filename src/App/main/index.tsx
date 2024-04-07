@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import PageLayout from '../../components/page-layout';
 import CatalogFilter from '../../containers/catalog-filter';
 import ProductsList from '../../containers/products-list';
+import ProductsTable from '../../containers/products-table';
 import TabsContainer from '../../containers/tabs-container';
 import { type RootState, useAppDispatch } from '../../redux';
 import { fetchCategories } from '../../redux/categorySlice/asyncActions';
@@ -15,7 +16,7 @@ function Main() {
 	const dispatch = useAppDispatch();
 	const select = useSelector((state: RootState) => ({
 		user: state.user,
-		limit: state.filter.limit
+		tab: state.menu.tab
 	}));
 	const callbacks = {
 		onLogout: useCallback(() => {
@@ -23,22 +24,17 @@ function Main() {
 			navigate('/');
 		}, [navigate])
 	};
-	
+
 	useEffect(() => {
 		if (!select.user.isAuth) {
-			navigate('/')
+			navigate('/');
 		}
 	}, [select.user]);
-	
+
 	useEffect(() => {
-		dispatch(fetchCategories())
+		dispatch(fetchCategories());
 	}, []);
-	
-	useEffect(() => {
-		dispatch(fetchProducts({limit: select.limit}))
-		
-	}, [select.limit]);
-	
+
 	return (
 		<PageLayout
 			user={select.user}
@@ -46,7 +42,7 @@ function Main() {
 			logout={callbacks.onLogout}
 		>
 			<TabsContainer />
-			<ProductsList />
+			{select.tab === '1' ? <ProductsList /> : <ProductsTable />}
 		</PageLayout>
 	);
 }

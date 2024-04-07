@@ -6,4 +6,5 @@ export interface FilterSliceState {
 	currentPage: number;
 	sort: SortType;
 	limit: number;
+	isPublished: boolean;
 }

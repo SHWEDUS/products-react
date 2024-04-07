@@ -10,16 +10,17 @@ export const userSlice = createSlice({
 	reducers: {
 		setUser: (state, action: PayloadAction<LoginPayloadAction>) => {
 			state.name = action.payload.name;
-			state.email = action.payload.email;
 			state.isAuth = true;
 			sessionStorage.setItem(
 				'user',
-				JSON.stringify({ isAuth: true, name: action.payload.name, email: action.payload.email })
+				JSON.stringify({
+					isAuth: true,
+					name: action.payload.name
+				})
 			);
 		},
 		logout: state => {
 			state.name = '';
-			state.email = '';
 			state.isAuth = false;
 			sessionStorage.removeItem('user');
 		}

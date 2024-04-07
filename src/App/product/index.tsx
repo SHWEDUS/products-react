@@ -5,14 +5,14 @@ import PageLayout from '../../components/page-layout';
 import ProductCard from '../../components/productCard';
 import CatalogFilter from '../../containers/catalog-filter';
 import ProductsList from '../../containers/products-list';
+import type { ProductParams } from '../../models/params/product-params';
 import { type RootState, useAppDispatch } from '../../redux';
 import { fetchCategories } from '../../redux/categorySlice/asyncActions';
-import { fetchProducts, fetchProductsById } from '../../redux/productsSlice/asyncActions';
+import {
+	fetchProducts,
+	fetchProductsById
+} from '../../redux/productsSlice/asyncActions';
 import { logout } from '../../redux/userSlice/slice';
-
-type ProductParams = {
-	id: string
-}
 
 const Product: React.FC = () => {
 	const { id } = useParams<ProductParams>();
@@ -28,21 +28,21 @@ const Product: React.FC = () => {
 			navigate('/');
 		}, [navigate])
 	};
-	
+
 	useEffect(() => {
 		if (!select.user.isAuth) {
-			navigate('/')
+			navigate('/');
 		}
 	}, [select.user]);
-	
+
 	useEffect(() => {
-		id && dispatch(fetchProductsById({ id }))
+		id && dispatch(fetchProductsById({ id }));
 	}, [id]);
-	
+
 	if (!select.product) {
 		return <></>;
 	}
-	
+
 	return (
 		<PageLayout
 			user={select.user}
@@ -52,6 +52,6 @@ const Product: React.FC = () => {
 			<ProductCard {...select.product} />
 		</PageLayout>
 	);
-}
+};
 
 export default memo(Product);

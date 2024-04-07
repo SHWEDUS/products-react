@@ -10,27 +10,31 @@ const {TextArea} = Input
 interface FormProductProps {
 	sendForm: (data: FormProductArgs) => void;
 	onReset: () => void;
+	initValues?: IProduct;
+	type: 'edit' | 'create';
+	onDelete?: () => void;
 }
 
 const FormProduct: React.FC<FormProductProps> = (props) => {
 	const [form] = Form.useForm<FormProductArgs>();
 	return (
-		<Form form={form} name={'create-form'} onFinish={props.sendForm} onReset={props.onReset}>
+		<Form form={form} name={'product-form'} onFinish={props.sendForm} onReset={props.onReset} initialValues={props.initValues}>
 			<Form.Item name={'title'} label={'Name of product'} rules={[{ required: true, message: 'Enter product name' }]}>
 				<Input autoComplete={'off'}/>
 			</Form.Item>
 			<Form.Item name={'price'} label={'Product price'} rules={[{ required: true, message: 'Assign a price to the product' }]}>
-				<InputNumber min={1} autoComplete={''} addonAfter={'$'} />
+				<InputNumber min={1} autoComplete={''} addonAfter={'$'} autoCapitalize={'off'} />
 			</Form.Item>
 			<Form.Item name={'description'} label={'Product description'} rules={[{ required: true, message: 'Enter a description for the product' }]}>
 				<TextArea autoComplete={''} rows={5} />
 			</Form.Item>
-			<Form.Item name={'isPublished'} label={'Published product'} rules={[{ required: true, message: 'Note that the product has been published' }]}>
+			<Form.Item name={'isPublished'} label={'Published product'}>
 				<Switch />
 			</Form.Item>
 			<Flex gap={20}>
-				<Button form={'create-form'} htmlType={'reset'} type={'default'}>Cancel</Button>
-				<Button form={'create-form'} htmlType={'submit'} type={'primary'}>Send</Button>
+				<Button form={'product-form'} htmlType={'reset'} type={'default'}>Cancel</Button>
+				<Button form={'product-form'} htmlType={'submit'} type={'primary'}>Send</Button>
+				{props.type === 'edit' && <Button form={'product-form'} htmlType={'button'} danger type={'primary'} onClick={props.onDelete}>Delete</Button> }
 			</Flex>
 		</Form>
 	);

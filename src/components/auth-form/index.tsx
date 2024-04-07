@@ -27,18 +27,41 @@ const AuthForm: React.FC<AuthFormProps> = ({ login }) => {
 		<Form form={form} onFinish={handleFormSubmit}>
 			<Title style={{ fontSize: '25px' }}>Авторизуйтесь</Title>
 			<Form.Item
-				label='Имя'
+				label='Login'
 				name='name'
-				rules={[{ required: true, message: 'Введите имя' }]}
+				rules={[{ required: true, message: 'Enter a login!' }]}
 			>
 				<Input autoComplete={'off'} />
 			</Form.Item>
 			<Form.Item
-				label='Email'
-				name='email'
-				rules={[{ required: true, message: 'Введите email' }]}
+				label='Password'
+				name='password'
+				rules={[{ required: true, message: 'Enter a password!' }]}
+				hasFeedback
 			>
-				<Input type={'email'} autoComplete={'off'} />
+				<Input.Password />
+			</Form.Item>
+			<Form.Item
+				label='Confirm password'
+				name='confirm'
+				rules={[
+					{
+						required: true,
+						message: 'Confirm your password!'
+					},
+					({ getFieldValue }) => ({
+						validator(_, value) {
+							if (!value || getFieldValue('password') === value) {
+								return Promise.resolve();
+							}
+							return Promise.reject(
+								new Error('The new password that you entered do not match!')
+							);
+						}
+					})
+				]}
+			>
+				<Input.Password />
 			</Form.Item>
 			<Form.Item>
 				<Button type='primary' htmlType='submit'>

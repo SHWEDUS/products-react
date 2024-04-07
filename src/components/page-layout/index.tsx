@@ -8,7 +8,6 @@ import { LogoutOutlined } from '@ant-design/icons';
 
 const { Header, Footer, Sider, Content } = Layout;
 
-
 interface PageLayoutProps {
 	children: React.ReactNode;
 	user: IUser;
@@ -69,7 +68,7 @@ const footerStyle: React.CSSProperties = {
 	padding: '20px'
 };
 
-const PageLayout: React.FC<PageLayoutProps> = (props) => {
+const PageLayout: React.FC<PageLayoutProps> = props => {
 	if (props.user.isAuth) {
 		return (
 			<Layout>
@@ -98,7 +97,7 @@ const PageLayout: React.FC<PageLayoutProps> = (props) => {
 			</Layout>
 		);
 	}
-	
+
 	return (
 		<Layout style={layoutStyle}>
 			<Header style={headerStyle}>React Products</Header>
