@@ -1,6 +1,5 @@
 import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
-import type { SortType } from '../../models/SortType';
 import type { Status } from '../../models/Status';
 
 export interface ProductSliceState {
@@ -8,7 +7,7 @@ export interface ProductSliceState {
 	item?: IProduct;
 	myItems: IProduct[];
 	status: Status;
-	lastId?: number;
+	lastId: number;
 }
 
 export type FetchProductsArgs = {

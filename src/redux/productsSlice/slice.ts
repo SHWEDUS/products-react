@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { IProduct } from '../../models/IProduct';
 import { Status } from '../../models/Status';
+import { getLastId } from '../../utils/getLastId';
 import { getMyItems } from '../../utils/getMyItems';
 import {
 	fetchProducts,
@@ -18,7 +19,8 @@ import type { postProductArgs, ProductSliceState } from './types';
 const initialState: ProductSliceState = {
 	items: [],
 	myItems: getMyItems(),
-	status: Status.LOADING
+	status: Status.LOADING,
+	lastId: getLastId()
 };
 
 export const productSlice = createSlice({
@@ -26,20 +28,12 @@ export const productSlice = createSlice({
 	initialState,
 	reducers: {
 		addProduct: (state, action: PayloadAction<postProductArgs>) => {
-			if (!state.lastId) {
-				state.myItems = [
-					...state.myItems,
-					{ ...action.payload, id: state.myItems.length + 1 }
-				];
-				state.lastId = state.myItems.length + 1;
-			} else {
-				state.myItems = [
-					...state.myItems,
-					{ ...action.payload, id: state.lastId + 1 }
-				];
-				state.lastId = state.lastId + 1;
-			}
-
+			state.myItems = [
+				...state.myItems,
+				{ ...action.payload, id: state.lastId + 1 }
+			];
+			state.lastId = state.lastId + 1;
+			localStorage.setItem('lastId', String(state.lastId));
 			localStorage.setItem('items', JSON.stringify(state.myItems));
 		},
 		updateProduct: (state, action: PayloadAction<IProduct>) => {
