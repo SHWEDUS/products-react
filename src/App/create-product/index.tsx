@@ -1,8 +1,9 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import FormProduct from '../../components/form-product';
 import PageLayout from '../../components/page-layout';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import { useAppDispatch } from '../../redux';
 import { postProduct } from '../../redux/productsSlice/asyncActions';
@@ -37,11 +38,7 @@ const CreateProduct: React.FC = () => {
 		onReset: useCallback(() => navigate('/products'), [navigate])
 	};
 
-	useEffect(() => {
-		if (!user.isAuth) {
-			navigate('/');
-		}
-	}, [user]);
+	useAuthenticated(user);
 
 	return (
 		<PageLayout

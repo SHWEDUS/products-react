@@ -5,6 +5,7 @@ import PageLayout from '../../components/page-layout';
 import ProductsList from '../../containers/products-list';
 import ProductsTable from '../../containers/products-table';
 import TabsContainer from '../../containers/tabs-container';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 import { useAppDispatch } from '../../redux';
 import { fetchCategories } from '../../redux/categorySlice/asyncActions';
 import { selectTab } from '../../redux/menuSlice/selectors';
@@ -24,11 +25,7 @@ function Main() {
 		}, [navigate, dispatch])
 	};
 
-	useEffect(() => {
-		if (!user.isAuth) {
-			navigate('/');
-		}
-	}, [user]);
+	useAuthenticated(user);
 
 	useEffect(() => {
 		dispatch(fetchCategories());

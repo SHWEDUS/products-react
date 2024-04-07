@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '../../components/page-layout';
 import ProductCard from '../../components/productCard';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 import type { ProductParams } from '../../models/params/product-params';
 import { useAppDispatch } from '../../redux';
 import { fetchProductsById } from '../../redux/productsSlice/asyncActions';
@@ -23,11 +24,7 @@ const Product: React.FC = () => {
 		}, [navigate, dispatch])
 	};
 
-	useEffect(() => {
-		if (!user.isAuth) {
-			navigate('/');
-		}
-	}, [user]);
+	useAuthenticated(user);
 
 	useEffect(() => {
 		id && dispatch(fetchProductsById({ id }));

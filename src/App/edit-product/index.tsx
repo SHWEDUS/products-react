@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import FormProduct from '../../components/form-product';
 import PageLayout from '../../components/page-layout';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { ProductParams } from '../../models/params/product-params';
 import { useAppDispatch } from '../../redux';
@@ -41,7 +42,7 @@ const EditProduct: React.FC = () => {
 				id && dispatch(updateProduct({ ...data, date, id: Number(id) }));
 				navigate('/products');
 			},
-			[dispatch, id]
+			[dispatch, id, navigate]
 		),
 		onDelete: useCallback(() => {
 			if (
@@ -51,15 +52,11 @@ const EditProduct: React.FC = () => {
 				dispatch(removeProduct(Number(id)));
 				navigate('/products');
 			}
-		}, [dispatch, id, window]),
+		}, [dispatch, id, navigate]),
 		onReset: useCallback(() => navigate('/products'), [navigate])
 	};
 
-	useEffect(() => {
-		if (!user.isAuth) {
-			navigate('/');
-		}
-	}, [user]);
+	useAuthenticated(user);
 
 	if (!product?.title) {
 		return <></>;
