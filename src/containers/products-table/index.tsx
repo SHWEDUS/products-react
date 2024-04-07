@@ -115,7 +115,7 @@ function ProductsTable() {
 				pagination={{ pageSize: 5 }}
 			/>
 		);
-	}, [products]);
+	}, [products, data.tableData]);
 
 	return table;
 }

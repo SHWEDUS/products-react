@@ -29,9 +29,9 @@ export const productSlice = createSlice({
 			if (!state.lastId) {
 				state.myItems = [
 					...state.myItems,
-					{ ...action.payload, id: state.items.length + 1 }
+					{ ...action.payload, id: state.myItems.length + 1 }
 				];
-				state.lastId = state.items.length + 1;
+				state.lastId = state.myItems.length + 1;
 			} else {
 				state.myItems = [
 					...state.myItems,
