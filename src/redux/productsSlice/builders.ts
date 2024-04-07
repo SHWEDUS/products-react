@@ -1,4 +1,3 @@
-import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
 import { type ProductSliceState } from './types';
 import { WritableDraft } from 'immer/src/types/types-external';

@@ -4,44 +4,48 @@ import { useNavigate } from 'react-router-dom';
 import FormProduct from '../../components/form-product';
 import PageLayout from '../../components/page-layout';
 import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
-import { type RootState, store, useAppDispatch } from '../../redux';
+import { useAppDispatch } from '../../redux';
 import { postProduct } from '../../redux/productsSlice/asyncActions';
 import { addProduct } from '../../redux/productsSlice/slice';
-import type { postProductArgs } from '../../redux/productsSlice/types';
+import { selectUser } from '../../redux/userSlice/selectors';
 import { logout } from '../../redux/userSlice/slice';
 
 const CreateProduct: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const select = useSelector((state: RootState) => ({
-		user: state.user
-	}));
+	const user = useSelector(selectUser);
+
 	const callbacks = {
 		onLogout: useCallback(() => {
 			dispatch(logout());
 			navigate('/');
-		}, [navigate]),
+		}, [navigate, dispatch]),
 		sendForm: useCallback(
 			(data: FormProductArgs) => {
-				const date = new Date().toJSON().slice(0, 10).replace(/-/g, '.');
-				dispatch(addProduct({ ...data, date } as postProductArgs));
-				dispatch(postProduct({ ...data, date } as postProductArgs));
+				const date = new Date().toLocaleString('ru', {
+					year: 'numeric',
+					month: 'numeric',
+					day: 'numeric',
+					timeZone: 'UTC'
+				});
+				dispatch(addProduct({ ...data, date }));
+				dispatch(postProduct({ ...data, date }));
 				navigate('/products');
 			},
-			[store]
+			[dispatch, navigate]
 		),
 		onReset: useCallback(() => navigate('/products'), [navigate])
 	};
 
 	useEffect(() => {
-		if (!select.user.isAuth) {
+		if (!user.isAuth) {
 			navigate('/');
 		}
-	}, [select.user]);
+	}, [user]);
 
 	return (
 		<PageLayout
-			user={select.user}
+			user={user}
 			title={'Create Product'}
 			logout={callbacks.onLogout}
 		>

@@ -1,10 +1,14 @@
 import { Button, Flex, Select, Space } from 'antd';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import SearchInput from '../../components/search-input';
-import type { LimitType } from '../../models/LimitType';
-import type { SortType } from '../../models/SortType';
-import { type RootState, store, useAppDispatch } from '../../redux';
+import { Status } from '../../models/Status';
+import { useAppDispatch } from '../../redux';
+import {
+	selectCategories,
+	selectStatusCategories
+} from '../../redux/categorySlice/selectors';
+import { selectFilters } from '../../redux/filterSlice/selectors';
 import {
 	changeCategory,
 	changeLimit,
@@ -15,45 +19,49 @@ import {
 import { limitItems, sortItems } from '../../utils/consts';
 
 const CatalogFilter: React.FC = () => {
+	const [limit, setLimit] = useState(8);
 	const dispatch = useAppDispatch();
-	const select = useSelector((state: RootState) => ({
-		filter: state.filter,
-		categories: [
-			{
-				value: 'All',
-				label: 'All'
-			},
-			...state.category.items.map((item: string) => ({
-				value: item,
-				label: item
-			}))
-		]
-	}));
+	const filter = useSelector(selectFilters);
+	const status = useSelector(selectStatusCategories);
+	const categories = [
+		{
+			value: 'All',
+			label: 'All'
+		},
+		...useSelector(selectCategories).map((item: string) => ({
+			value: item,
+			label: item
+		}))
+	];
 
 	const callbacks = {
 		// Сортировка
 		onSort: useCallback(
-			(sort: SortType) => dispatch(changeSort(sort)),
-			[store]
+			(sort: 'asc' | 'desc') => dispatch(changeSort(sort)),
+			[dispatch]
 		),
 		// Поиск
 		onSearch: useCallback(
 			(query: string) => dispatch(setSearchValue(query)),
-			[store]
+			[dispatch]
 		),
 		// Сброс
-		onReset: useCallback(() => dispatch(onReset()), [store]),
+		onReset: useCallback(() => {
+			setLimit(8);
+			dispatch(onReset());
+		}, [dispatch, setLimit]),
 		// Фильтр по категории
 		onCategory: useCallback(
 			(category: string) => dispatch(changeCategory(category)),
-			[store]
+			[dispatch]
 		),
 		// Загрузка карточек
 		onLimit: useCallback(
-			(limit: LimitType) => {
-				dispatch(changeLimit(limit as unknown as number));
+			(limit: number) => {
+				setLimit(limit);
+				dispatch(changeLimit(limit));
 			},
-			[store]
+			[dispatch, setLimit]
 		)
 	};
 
@@ -61,22 +69,20 @@ const CatalogFilter: React.FC = () => {
 		<Flex vertical={true} gap={10}>
 			<Space>
 				<Select
+					loading={status === Status.LOADING}
 					style={{ minWidth: '200px' }}
-					options={select.categories}
-					value={select.filter.category}
+					options={categories}
+					value={filter.category}
 					onChange={callbacks.onCategory}
 				/>
 				<Select
 					options={sortItems}
-					value={select.filter.sort}
+					value={filter.sort}
 					onChange={callbacks.onSort}
 				/>
 				<Select
 					options={limitItems}
-					value={{
-						label: `${select.filter.limit} product's`,
-						value: select.filter.limit
-					}}
+					value={limit}
 					onChange={callbacks.onLimit}
 				/>
 				<Button onClick={callbacks.onReset} type={'default'}>
@@ -85,7 +91,7 @@ const CatalogFilter: React.FC = () => {
 			</Space>
 			<Space>
 				<SearchInput
-					value={select.filter.searchValue}
+					value={filter.searchValue}
 					onChange={callbacks.onSearch}
 					placeholder={'Поиск'}
 				/>

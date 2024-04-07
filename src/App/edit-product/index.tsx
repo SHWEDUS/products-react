@@ -4,33 +4,26 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FormProduct from '../../components/form-product';
 import PageLayout from '../../components/page-layout';
 import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
-import type { IProduct } from '../../models/IProduct';
 import type { ProductParams } from '../../models/params/product-params';
-import { type RootState, store, useAppDispatch } from '../../redux';
-import { products } from '../../redux/exports';
+import { useAppDispatch } from '../../redux';
 import {
 	deleteProduct,
 	fetchProducts,
-	postProduct,
 	putProduct
 } from '../../redux/productsSlice/asyncActions';
-import {
-	addProduct,
-	removeProduct,
-	updateProduct
-} from '../../redux/productsSlice/slice';
+import { selectMyProducts } from '../../redux/productsSlice/selectors';
+import { removeProduct, updateProduct } from '../../redux/productsSlice/slice';
+import { selectUser } from '../../redux/userSlice/selectors';
 import { logout } from '../../redux/userSlice/slice';
 
 const EditProduct: React.FC = () => {
 	const { id } = useParams<ProductParams>();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const select = useSelector((state: RootState) => ({
-		user: state.user,
-		product:
-			state.products.items.find(item => item.id === Number(id)) ||
-			state.products.myItems.find(item => item.id === Number(id))
-	}));
+	const user = useSelector(selectUser);
+	const product = useSelector(selectMyProducts).find(
+		item => item.id === Number(id)
+	);
 
 	useEffect(() => {
 		dispatch(fetchProducts({ limit: 0, sort: 'asc' }));
@@ -40,7 +33,7 @@ const EditProduct: React.FC = () => {
 		onLogout: useCallback(() => {
 			dispatch(logout());
 			navigate('/');
-		}, [navigate]),
+		}, [navigate, dispatch]),
 		sendForm: useCallback(
 			(data: FormProductArgs) => {
 				const date = new Date().toJSON().slice(0, 10).replace(/-/g, '.');
@@ -48,36 +41,34 @@ const EditProduct: React.FC = () => {
 				id && dispatch(updateProduct({ ...data, date, id: Number(id) }));
 				navigate('/products');
 			},
-			[store, id]
+			[dispatch, id]
 		),
 		onDelete: useCallback(() => {
 			if (
-				window.confirm(
-					`Are you sure you want to delete a '${select.product?.title}'`
-				)
+				window.confirm(`Are you sure you want to delete a '${product?.title}'`)
 			) {
 				dispatch(deleteProduct({ id: Number(id) }));
 				dispatch(removeProduct(Number(id)));
 				navigate('/products');
 			}
-		}, [store, id]),
+		}, [dispatch, id, window]),
 		onReset: useCallback(() => navigate('/products'), [navigate])
 	};
 
 	useEffect(() => {
-		if (!select.user.isAuth) {
+		if (!user.isAuth) {
 			navigate('/');
 		}
-	}, [select.user]);
+	}, [user]);
 
-	if (!select.product) {
+	if (!product?.title) {
 		return <></>;
 	}
 
 	return (
 		<PageLayout
-			user={select.user}
-			title={`${select.product.title} (Edit)`}
+			user={user}
+			title={`${product.title} (Edit)`}
 			logout={callbacks.onLogout}
 		>
 			<FormProduct
@@ -85,7 +76,7 @@ const EditProduct: React.FC = () => {
 				sendForm={callbacks.sendForm}
 				onReset={callbacks.onReset}
 				onDelete={callbacks.onDelete}
-				initValues={select.product}
+				initValues={product}
 			/>
 		</PageLayout>
 	);

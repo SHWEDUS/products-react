@@ -12,7 +12,6 @@ import type {
 export const fetchProducts = createAsyncThunk<IProduct[], fetchProductsArgs>(
 	'product/fetchProducts',
 	async params => {
-		console.log(params);
 		const { data } = await ProductsService.getProducts({ ...params });
 		return data;
 	}

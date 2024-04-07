@@ -3,53 +3,43 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '../../components/page-layout';
 import ProductCard from '../../components/productCard';
-import CatalogFilter from '../../containers/catalog-filter';
-import ProductsList from '../../containers/products-list';
 import type { ProductParams } from '../../models/params/product-params';
-import { type RootState, useAppDispatch } from '../../redux';
-import { fetchCategories } from '../../redux/categorySlice/asyncActions';
-import {
-	fetchProducts,
-	fetchProductsById
-} from '../../redux/productsSlice/asyncActions';
+import { useAppDispatch } from '../../redux';
+import { fetchProductsById } from '../../redux/productsSlice/asyncActions';
+import { selectProduct } from '../../redux/productsSlice/selectors';
+import { selectUser } from '../../redux/userSlice/selectors';
 import { logout } from '../../redux/userSlice/slice';
 
 const Product: React.FC = () => {
 	const { id } = useParams<ProductParams>();
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const select = useSelector((state: RootState) => ({
-		user: state.user,
-		product: state.products.item
-	}));
+	const user = useSelector(selectUser);
+	const product = useSelector(selectProduct);
 	const callbacks = {
 		onLogout: useCallback(() => {
 			dispatch(logout());
 			navigate('/');
-		}, [navigate])
+		}, [navigate, dispatch])
 	};
 
 	useEffect(() => {
-		if (!select.user.isAuth) {
+		if (!user.isAuth) {
 			navigate('/');
 		}
-	}, [select.user]);
+	}, [user]);
 
 	useEffect(() => {
 		id && dispatch(fetchProductsById({ id }));
 	}, [id]);
 
-	if (!select.product) {
+	if (!product) {
 		return <></>;
 	}
 
 	return (
-		<PageLayout
-			user={select.user}
-			title={select.product?.title}
-			logout={callbacks.onLogout}
-		>
-			<ProductCard {...select.product} />
+		<PageLayout user={user} title={product?.title} logout={callbacks.onLogout}>
+			<ProductCard {...product} />
 		</PageLayout>
 	);
 };

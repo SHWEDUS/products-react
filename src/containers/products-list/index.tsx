@@ -1,4 +1,4 @@
-import { Flex, Pagination } from 'antd';
+import { Flex } from 'antd';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useSelector } from 'react-redux';
@@ -6,66 +6,69 @@ import { useNavigate } from 'react-router-dom';
 import Item from '../../components/item';
 import List from '../../components/list';
 import type { IProduct } from '../../models/IProduct';
-import type { SortType } from '../../models/SortType';
-import { type RootState, useAppDispatch } from '../../redux';
+import { Status } from '../../models/Status';
+import { useAppDispatch } from '../../redux';
+import { selectFilters } from '../../redux/filterSlice/selectors';
 import { changeLimit } from '../../redux/filterSlice/slice';
 import {
 	fetchProducts,
 	fetchProductsByCategory
 } from '../../redux/productsSlice/asyncActions';
+import {
+	selectProducts,
+	selectStatus
+} from '../../redux/productsSlice/selectors';
 
 function ProductsList() {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const [products, setProducts] = useState<IProduct[]>([]);
-	const select = useSelector((state: RootState) => ({
-		products: state.products.items,
-		filter: state.filter
-	}));
+	const status = useSelector(selectStatus);
+	const productsInit = useSelector(selectProducts);
+	const filter = useSelector(selectFilters);
 	const { ref, inView } = useInView({
 		threshold: 0.5
 	});
 
 	useEffect(() => {
 		const length = products.length;
-		if (products.length > 0 && inView && select.filter.limit <= length) {
-			dispatch(changeLimit(select.filter.limit + 5));
+		if (products.length > 0 && inView && filter.limit <= length) {
+			dispatch(changeLimit(filter.limit + 5));
 		}
 	}, [products, inView]);
 
 	useEffect(() => {
-		select.filter.category === 'All' &&
+		filter.category === 'All' &&
 			dispatch(
 				fetchProducts({
-					limit: select.filter.limit,
-					sort: select.filter.sort as unknown as 'asc' | 'desc'
+					limit: filter.limit,
+					sort: filter.sort
 				})
 			);
-	}, [select.filter.limit, select.filter.sort, select.filter.category]);
+	}, [filter.limit, filter.sort, filter.category]);
 
 	useEffect(() => {
-		select.filter.searchValue
+		filter.searchValue
 			? setProducts(
-					select.products.filter(product =>
+					productsInit.filter(product =>
 						product.title
 							.toLowerCase()
-							.includes(select.filter.searchValue.toLowerCase())
+							.includes(filter.searchValue.toLowerCase())
 					)
 				)
-			: setProducts(select.products);
-	}, [select.filter.searchValue, select.products]);
+			: setProducts(productsInit);
+	}, [filter.searchValue, productsInit]);
 
 	useEffect(() => {
-		console.log(select.filter.sort);
-		select.filter.category !== 'All' &&
+		filter.category !== 'All' &&
 			dispatch(
 				fetchProductsByCategory({
-					category: select.filter.category,
-					sort: select.filter.sort as unknown as 'asc' | 'desc',
-					limit: select.filter.limit
+					category: filter.category,
+					sort: filter.sort,
+					limit: filter.limit
 				})
 			);
-	}, [select.filter.category, select.filter.sort, select.filter.limit]);
+	}, [filter.category, filter.sort, filter.limit]);
 
 	const callbacks = {
 		redirectTo: useCallback(
@@ -77,9 +80,13 @@ function ProductsList() {
 	const renders = {
 		item: useCallback(
 			(item: IProduct) => (
-				<Item item={item} redirectTo={callbacks.redirectTo} />
+				<Item
+					isLoading={status === Status.LOADING}
+					item={item}
+					redirectTo={callbacks.redirectTo}
+				/>
 			),
-			[]
+			[status, callbacks.redirectTo, Status]
 		)
 	};
 

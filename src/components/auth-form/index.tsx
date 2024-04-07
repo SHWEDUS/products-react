@@ -3,8 +3,6 @@ import { Input, Select, Button, Form } from 'antd';
 import Title from 'antd/es/typography/Title';
 import { useNavigate } from 'react-router-dom';
 
-const { Option } = Select;
-
 interface AuthFormArgs {
 	name: string;
 	email: string;

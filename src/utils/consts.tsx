@@ -9,8 +9,8 @@ export const sortItems: SortType[] = [
 ];
 
 export const siderItems = [
-	{ label: 'Продукты', id: 1, url: '/products' },
-	{ label: 'Добавить продукт', id: 2, url: '/products/create' }
+	{ label: 'Products', id: 1, url: '/products' },
+	{ label: 'Create Product', id: 2, url: '/products/create' }
 ];
 
 export const limitItems: LimitType[] = [
@@ -18,7 +18,6 @@ export const limitItems: LimitType[] = [
 	{ label: "16 product's", value: 16 },
 	{ label: "All product's", value: 0 }
 ];
-
 export const tabsItems: TabsProps['items'] = [
 	{
 		key: '1',

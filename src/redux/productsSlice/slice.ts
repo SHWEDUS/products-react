@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { FormProductArgs } from '../../models/forms/FormProductsArgs';
 import type { IProduct } from '../../models/IProduct';
 import { Status } from '../../models/Status';
 import { getMyItems } from '../../utils/getMyItems';
@@ -14,11 +13,7 @@ import {
 	fetchProductsByIdBuilder,
 	postProductBuilder
 } from './builders';
-import type {
-	postProductArgs,
-	ProductSliceState,
-	putProductArgs
-} from './types';
+import type { postProductArgs, ProductSliceState } from './types';
 
 const initialState: ProductSliceState = {
 	items: [],
@@ -30,9 +25,6 @@ export const productSlice = createSlice({
 	name: 'product',
 	initialState,
 	reducers: {
-		setStatus: (state, action: PayloadAction<Status>) => {
-			state.status = action.payload;
-		},
 		addProduct: (state, action: PayloadAction<postProductArgs>) => {
 			if (!state.lastId) {
 				state.myItems = [
@@ -69,7 +61,7 @@ export const productSlice = createSlice({
 	}
 });
 
-export const { setStatus, addProduct, removeProduct, updateProduct } =
+export const { addProduct, removeProduct, updateProduct } =
 	productSlice.actions;
 
 export default productSlice.reducer;

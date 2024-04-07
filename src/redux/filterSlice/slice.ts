@@ -1,15 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { SortType } from '../../models/SortType';
 import type { FilterSliceState } from './types';
 
 const initialState: FilterSliceState = {
 	searchValue: '',
 	category: 'All',
-	currentPage: 1,
-	sort: {
-		label: 'ancient',
-		value: 'asc'
-	},
+	sort: 'asc',
 	limit: 8,
 	isPublished: false
 };
@@ -21,21 +16,14 @@ export const filterSlice = createSlice({
 		changeCategory: (state, action: PayloadAction<string>) => {
 			state.category = action.payload;
 		},
-		changeSort: (state, action: PayloadAction<SortType>) => {
+		changeSort: (state, action: PayloadAction<'asc' | 'desc'>) => {
 			state.sort = action.payload;
 		},
 		changeLimit: (state, action: PayloadAction<number>) => {
 			state.limit = action.payload;
 		},
-		setCurrentPage: (state, action: PayloadAction<number>) => {
-			state.currentPage = action.payload;
-		},
 		onReset: state => {
-			state.currentPage = 1;
-			state.sort = {
-				label: 'ancient',
-				value: 'asc'
-			};
+			state.sort = 'asc';
 			state.category = 'All';
 			state.searchValue = '';
 			state.limit = 8;
@@ -54,7 +42,6 @@ export const {
 	changeSort,
 	changeIsPublished,
 	changeLimit,
-	setCurrentPage,
 	onReset,
 	setSearchValue
 } = filterSlice.actions;
