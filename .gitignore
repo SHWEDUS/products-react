@@ -7,7 +7,6 @@
 /.idea
 yarn.lock
 .prettierrc
-.env
 # testing
 /coverage
 
